@@ -18,7 +18,7 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-//tarja proenem
+//create_customer
 app.get('/yampi/create-customer', async (request, response, next) => {
   try {
     const payload = await fs
@@ -59,6 +59,56 @@ app.post('/yampi/create-customer', async (request, response, next) => {
   try {
     await fs.writeFile(
       path.join(process.cwd(), 'customer-data.json'),
+      JSON.stringify(request.body)
+    )
+
+    response.status(200).json({ message: 'Dados modificados com sucesso' })
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+
+//order_payd
+app.get('/yampi/order', async (request, response, next) => {
+  try {
+    const payload = await fs
+      .readFile(path.join(process.cwd(), 'order.json'), 'utf8')
+      .then(JSON.parse)
+
+    response.status(200).json(payload)
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+
+app.get('/yampi/order/hash', async (request, response, next) => {
+  try {
+    const hash = await fs
+      .readFile(path.join(process.cwd(), 'order.json'), 'utf8')
+      .then(data => crypto.createHash('md5').update(data).digest('hex'))
+
+    response.status(200).json(hash)
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+
+app.put('/yampi/order', async (request, response, next) => {
+  try {
+    await fs.writeFile(
+      path.join(process.cwd(), 'order.json'),
+      JSON.stringify(request.body)
+    )
+
+    response.status(200).json({ message: 'Dados modificados com sucesso' })
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+app.post('/yampi/order', async (request, response, next) => {
+  try {
+    await fs.writeFile(
+      path.join(process.cwd(), 'order.json'),
       JSON.stringify(request.body)
     )
 
