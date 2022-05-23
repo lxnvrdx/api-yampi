@@ -118,6 +118,55 @@ app.post('/yampi/order', async (request, response, next) => {
   }
 })
 
+//create_student
+app.get('/yampi/create-student', async (request, response, next) => {
+  try {
+    const payload = await fs
+      .readFile(path.join(process.cwd(), 'create-student.json'), 'utf8')
+      .then(JSON.parse)
+
+    response.status(200).json(payload)
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+
+app.get('/yampi/create-student/hash', async (request, response, next) => {
+  try {
+    const hash = await fs
+      .readFile(path.join(process.cwd(), 'create-student.json'), 'utf8')
+      .then(data => crypto.createHash('md5').update(data).digest('hex'))
+
+    response.status(200).json(hash)
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+
+app.put('/yampi/create-student', async (request, response, next) => {
+  try {
+    await fs.writeFile(
+      path.join(process.cwd(), 'create-student.json'),
+      JSON.stringify(request.body)
+    )
+
+    response.status(200).json({ message: 'Dados modificados com sucesso' })
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
+app.post('/yampi/create-student', async (request, response, next) => {
+  try {
+    await fs.writeFile(
+      path.join(process.cwd(), 'create-student.json'),
+      JSON.stringify(request.body)
+    )
+
+    response.status(200).json({ message: 'Dados modificados com sucesso' })
+  } catch (error) {
+    response.status(500).json({ message: 'Internal Server Error' })
+  }
+})
 /**
  * Normalize a port into a number, string, or false.
  *
